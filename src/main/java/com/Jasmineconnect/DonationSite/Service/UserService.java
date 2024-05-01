@@ -1,7 +1,7 @@
 package com.Jasmineconnect.DonationSite.Service;
 
 import com.Jasmineconnect.DonationSite.dto.UserDto;
-// UserService Interface
+
 public interface UserService {
     UserDto createUser(UserDto userDto);
     UserDto getUserById(Long userId);
