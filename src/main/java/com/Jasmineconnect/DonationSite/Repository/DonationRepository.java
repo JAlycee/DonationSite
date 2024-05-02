@@ -6,4 +6,18 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface DonationRepository extends JpaRepository<Donation, Long> {
+    Optional<Donation> findById(Long id);
+
+    List<Donation> findAll();
+
+    List<Donation> findByUserId(Long userId);
+
+    List<Donation> findByCampaignId(Long campaignId);
+
+    List<Donation> findByAmountGreaterThanEqual(BigDecimal amount);
+
+    List<Donation> findByDonationDateBetween(LocalDate startDate, LocalDate endDate);
+
+    List<Donation> findByUserIdAndCampaignId(Long userId, Long campaignId);
+}
 }

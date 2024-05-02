@@ -29,4 +29,16 @@ public class UserController {
         UserDto userDto = userService.getUserById(id);
         return  ResponseEntity.ok(userDto);
     }
+    // Delete User REST API
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+        userService.deleteUser(id);
+        return ResponseEntity.noContent().build();
+    }
+    // Update User REST API
+    @PutMapping("/{id}")
+    public ResponseEntity<UserDto> updateUser(@PathVariable Long id, @RequestBody UserDto userDto) {
+        UserDto updatedUserDto = userService.updateUser(id, userDto);
+        return ResponseEntity.ok(updatedUserDto);
+    }
 }
