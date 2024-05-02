@@ -4,6 +4,8 @@ import com.Jasmineconnect.DonationSite.Repository.CampaignRepository;
 import com.Jasmineconnect.DonationSite.Service.CampaignService;
 import com.Jasmineconnect.DonationSite.dto.CampaignDto;
 import com.Jasmineconnect.DonationSite.mapper.CampaignMapper;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 @Service

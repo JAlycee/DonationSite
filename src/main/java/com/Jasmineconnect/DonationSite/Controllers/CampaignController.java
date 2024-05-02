@@ -15,6 +15,7 @@ public class CampaignController {
     public CampaignController(CampaignService campaignService) {
         this.campaignService = campaignService;
     }
+
     @PostMapping
     public ResponseEntity<CampaignDto> createCampaign(@RequestBody CampaignDto campaignDto) {
         CampaignDto createdCampaign = campaignService.createCampaign(campaignDto);

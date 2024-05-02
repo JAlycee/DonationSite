@@ -11,7 +11,7 @@ public class CampaignDto {
     private Long id;
     private String name;
     private String description;
-    private boolean isWants;
+    private boolean wants;
     private double totalDonations;
     private double goalAmount;
     private Date startDate;

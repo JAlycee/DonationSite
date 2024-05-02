@@ -1,10 +1,10 @@
-package com.Jasmineconnect.DonationSite.Service.Impl;// Implement the methods defined in the DonationService interface. Use the DonationRepository to interact with the database. After creating a donation, call the email sending logic.
+package com.Jasmineconnect.DonationSite.Service.Impl;
+// Implement the methods defined in the DonationService interface. Use the DonationRepository to interact with the database. After creating a donation, call the email sending logic.// Implement the methods defined in the DonationService interface. Use the DonationRepository to interact with the database. After creating a donation, call the email sending logic.
 import com.Jasmineconnect.DonationSite.Entity.Donation;
 import com.Jasmineconnect.DonationSite.Repository.CampaignRepository;
 import com.Jasmineconnect.DonationSite.Repository.DonationRepository;
 import com.Jasmineconnect.DonationSite.Repository.UserRepository;
 import com.Jasmineconnect.DonationSite.Service.DonationService;
-import com.Jasmineconnect.DonationSite.Service.EmailService;
 import com.Jasmineconnect.DonationSite.dto.DonationDto;
 import org.springframework.stereotype.Service;
 
@@ -12,13 +12,11 @@ import org.springframework.stereotype.Service;
 public class DonationServiceImpl implements DonationService {
 
     private final DonationRepository donationRepository;
-    private final EmailService emailService;
     private final UserRepository userRepository;
     private final CampaignRepository campaignRepository;
 
-    public DonationServiceImpl(DonationRepository donationRepository, EmailService emailService, UserRepository userRepository, CampaignRepository campaignRepository) {
+    public DonationServiceImpl(DonationRepository donationRepository, UserRepository userRepository, CampaignRepository campaignRepository) {
         this.donationRepository = donationRepository;
-        this.emailService = emailService;
         this.userRepository = userRepository;
         this.campaignRepository = campaignRepository;
     }
@@ -34,10 +32,7 @@ public class DonationServiceImpl implements DonationService {
         // Save the donation
         Donation savedDonation = donationRepository.save(donation);
 
-        // Trigger email sending process
-        emailService.sendDonationConfirmationEmail(savedDonation);
-
-        // Convert saved Donation entity back to DonationDto and return it
+        // Convert and return the saved donation DTO
         return mapToDonationDto(savedDonation);
     }
 
