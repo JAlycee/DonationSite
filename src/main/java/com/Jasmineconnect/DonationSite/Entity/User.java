@@ -21,6 +21,7 @@ public class User {
 
     private String username;
     private String password;
+    private String email;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Campaign> campaigns;
@@ -32,5 +33,6 @@ public class User {
         this.id = id;
         this.username = username;
         this.password = password;
+        this.email = email;
     }
 }

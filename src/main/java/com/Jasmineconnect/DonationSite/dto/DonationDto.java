@@ -7,4 +7,5 @@ public class DonationDto {
     private double amount;
     private Long userId;
     private Long campaignId;
+    private String userEmail;
 }

@@ -24,4 +24,7 @@ public class Donation {
     @ManyToOne
     @JoinColumn(name = "campaign_id")
     private Campaign campaign;
+
+    @Transient
+    private String userEmail;
 }

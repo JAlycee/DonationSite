@@ -1,22 +1,31 @@
 package com.Jasmineconnect.DonationSite.Entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 
-@Data
+import java.util.Date;
+
+@Getter
+@Setter
 @Entity
 @Table(name = "campaign")
+@Accessors(chain = true)
 public class Campaign {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String title;
+    private String name;
     private String description;
+    private boolean wants;
+    private double totalDonations;
+    private double goalAmount;
+    private Date startDate;
+    private Date endDate;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-
-    // Constructors, getters, and setters
 }
