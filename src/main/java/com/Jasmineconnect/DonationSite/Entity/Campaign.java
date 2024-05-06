@@ -12,10 +12,7 @@ import java.util.Date;
 @Entity
 @Table(name = "campaign")
 @Accessors(chain = true)
-public class Campaign {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class Campaign extends AbstractEntity {
 
     private String name;
     private String description;

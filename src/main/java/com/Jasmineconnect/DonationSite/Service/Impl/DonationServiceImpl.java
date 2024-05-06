@@ -72,10 +72,7 @@ public class DonationServiceImpl implements DonationService {
     // Helper method to map Donation entity to DonationDto
     private DonationDto mapToDonationDto(Donation donation) {
         DonationDto donationDto = new DonationDto();
-        donationDto.setId(donation.getId());
         donationDto.setAmount(donation.getAmount());
-        donationDto.setUserId(donation.getUser().getId());
-        donationDto.setCampaignId(donation.getCampaign().getId());
         return donationDto;
     }
 }

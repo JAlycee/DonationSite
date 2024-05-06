@@ -7,13 +7,9 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
 @Entity
 @Table(name = "donation")
-public class Donation {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class Donation extends AbstractEntity {
 
     private double amount;
 

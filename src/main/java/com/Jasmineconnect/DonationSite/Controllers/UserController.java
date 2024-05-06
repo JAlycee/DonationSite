@@ -6,18 +6,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
 
-    private final UserService userService;
-
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
+    private UserService userService;
 
     // Add User REST API
-    @PostMapping
+    @PostMapping("/")
     public ResponseEntity<UserDto> addUser(@RequestBody UserDto userDto) {
         UserDto createdUserDto = userService.createUser(userDto);
         return new ResponseEntity<>(createdUserDto, HttpStatus.CREATED);
@@ -29,6 +26,9 @@ public class UserController {
         UserDto userDto = userService.getUserById(id);
         return  ResponseEntity.ok(userDto);
     }
+    // Get all users REST API
+
+
     // Delete User REST API
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
