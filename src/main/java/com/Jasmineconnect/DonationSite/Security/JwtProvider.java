@@ -1,19 +1,17 @@
 package com.Jasmineconnect.DonationSite.Security;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.DecodedJWT;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.function.Function;
 
 @Component
-public class JwtTokenProvider {
+public class JwtProvider {
 
     @Value("${jwt.secret}")
     private String secret;
@@ -22,18 +20,15 @@ public class JwtTokenProvider {
     private Long expiration;
 
     public String generateToken(UserDetails userDetails) {
-        Map<String, Object> claims = new HashMap<>();
-        return createToken(claims, userDetails.getUsername());
+        return createToken(userDetails.getUsername());
     }
 
-    public String createToken(Map<String, Object> claims, String subject) {
-        return Jwts.builder()
-                .setClaims(claims)
-                .setSubject(subject)
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + expiration))
-                .signWith(SignatureAlgorithm.HS512, secret)
-                .compact();
+    public String createToken(String subject) {
+        return JWT.create()
+                .withSubject(subject)
+                .withIssuedAt(new Date())
+                .withExpiresAt(new Date(System.currentTimeMillis() + expiration))
+                .sign(Algorithm.HMAC256(secret));
     }
 
     public Boolean validateToken(String token, UserDetails userDetails) {
@@ -42,30 +37,34 @@ public class JwtTokenProvider {
     }
 
     public String extractUsername(String token) {
-        return extractClaim(token, Claims::getSubject);
+        return extractClaim(token, DecodedJWT::getSubject);
     }
 
     public Date extractExpiration(String token) {
-        return extractClaim(token, Claims::getExpiration);
+        return extractClaim(token, DecodedJWT::getExpiresAt);
     }
 
-    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
-        final Claims claims = extractAllClaims(token);
-        return claimsResolver.apply(claims);
-    }
-
-    private Claims extractAllClaims(String token) {
-        return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
+    public <T> T extractClaim(String token, Function<DecodedJWT, T> claimsResolver) {
+        DecodedJWT jwt = JWT.require(Algorithm.HMAC256(secret)).build().verify(token);
+        return claimsResolver.apply(jwt);
     }
 
     private Boolean isTokenExpired(String token) {
-        return extractExpiration(token).before(new Date());
+        final Date expiration = extractExpiration(token);
+        return expiration.before(new Date());
     }
 
-    public Long getUserIdFromJWT(String jwt) {
+    public Long getUserIdFromJWT(String token) {
+        DecodedJWT jwt = JWT.require(Algorithm.HMAC256(secret)).build().verify(token);
+        return Long.parseLong(jwt.getSubject());
     }
 
-    public boolean validateToken(String jwt) {
+    public boolean validateToken(String token) {
+        try {
+            JWT.require(Algorithm.HMAC256(secret)).build().verify(token);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }
-

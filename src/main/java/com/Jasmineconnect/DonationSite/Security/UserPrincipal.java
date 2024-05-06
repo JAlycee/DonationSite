@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 @Getter
 @Setter
@@ -22,6 +23,11 @@ public class UserPrincipal implements UserDetails {
     private String password;
     private Collection<? extends GrantedAuthority> authorities;
 
+    public UserPrincipal(Long id, String username, String email, String password, List<SimpleGrantedAuthority> roleUser) {
+    }
+
+    public UserPrincipal(Long id, String username, List<SimpleGrantedAuthority> simpleGrantedAuthorities, String password) {
+    }
 
 
     public static UserPrincipal create(User user) {

@@ -13,7 +13,6 @@ import java.util.Date;
 @Table(name = "campaign")
 @Accessors(chain = true)
 public class Campaign extends AbstractEntity {
-
     private String name;
     private String description;
     private boolean wants;

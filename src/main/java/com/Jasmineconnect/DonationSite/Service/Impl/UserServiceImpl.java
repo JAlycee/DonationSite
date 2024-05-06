@@ -7,6 +7,8 @@ import com.Jasmineconnect.DonationSite.dto.UserDto;
 import com.Jasmineconnect.DonationSite.mapper.UserMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
@@ -55,5 +57,10 @@ public class UserServiceImpl implements UserService {
             // If the user doesn't exist, throw an exception or handle it as needed
             throw new RuntimeException("User doesn't exist");
         }
+    }
+
+    @Override
+    public List<UserDto> getAllUsers(String username) {
+        return null;
     }
 }
