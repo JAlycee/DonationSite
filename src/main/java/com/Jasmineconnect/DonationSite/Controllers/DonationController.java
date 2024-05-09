@@ -1,45 +1,61 @@
 package com.Jasmineconnect.DonationSite.Controllers;
-// Define REST endpoints for handling donation-related requests. Map these endpoints to appropriate methods in the DonationService.
+
+import com.Jasmineconnect.DonationSite.Dto.DonationDto;
 import com.Jasmineconnect.DonationSite.Service.DonationService;
-import com.Jasmineconnect.DonationSite.dto.DonationDto;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin
+import java.util.List;
+
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
-@RequestMapping("/api/donations")
+@RequestMapping("/donations")
 public class DonationController {
 
     private final DonationService donationService;
 
+    @Autowired
     public DonationController(DonationService donationService) {
         this.donationService = donationService;
     }
 
     @PostMapping
-    public ResponseEntity<DonationDto> createDonation(@RequestBody DonationDto donationDto) {
+    public ResponseEntity<DonationDto> createDonation(@Valid @RequestBody DonationDto donationDto) {
         DonationDto createdDonation = donationService.createDonation(donationDto);
-        return new ResponseEntity<>(createdDonation, HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdDonation);
     }
 
     @GetMapping("/{donationId}")
     public ResponseEntity<DonationDto> getDonationById(@PathVariable Long donationId) {
-        DonationDto donationDto = donationService.getDonationById(donationId);
-        return new ResponseEntity<>(donationDto, HttpStatus.OK);
+        return donationService.getDonationById(donationId)
+                .map(donation -> ResponseEntity.ok(donation))
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PutMapping("/{donationId}")
-    public ResponseEntity<DonationDto> updateDonation(@PathVariable Long donationId, @RequestBody DonationDto donationDto) {
-        DonationDto updatedDonation = donationService.updateDonation(donationId, donationDto);
-        return new ResponseEntity<>(updatedDonation, HttpStatus.OK);
+    public ResponseEntity<DonationDto> updateDonation(@PathVariable Long donationId, @Valid @RequestBody DonationDto donationDto) {
+        return donationService.updateDonation(donationId, donationDto)
+                .map(donation -> ResponseEntity.ok(donation))
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{donationId}")
     public ResponseEntity<Void> deleteDonation(@PathVariable Long donationId) {
-        donationService.deleteDonation(donationId);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        boolean deleted = donationService.deleteDonation(donationId);
+        if (deleted) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping
+    public ResponseEntity<List<DonationDto>> getAllDonations() {
+        List<DonationDto> donations = donationService.getAllDonations();
+        return ResponseEntity.ok(donations);
     }
 }
-
-

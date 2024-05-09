@@ -2,10 +2,15 @@ package com.Jasmineconnect.DonationSite.Repository;
 
 import com.Jasmineconnect.DonationSite.Entity.Campaign;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
 
 import java.util.List;
 
+@Repository
 public interface CampaignRepository extends JpaRepository<Campaign, Long> {
 
-    <GoalAmount> List<Campaign> findByGoalAmount(GoalAmount goalAmount);
+    List<Campaign> findByGoalAmount(Double goalAmount);
+
+    List<Campaign> findByName(String name);
 }
