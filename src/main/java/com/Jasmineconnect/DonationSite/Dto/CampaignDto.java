@@ -1,5 +1,6 @@
 package com.Jasmineconnect.DonationSite.Dto;
 
+import com.Jasmineconnect.DonationSite.Entity.Campaign;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,4 +32,11 @@ public class  CampaignDto {
     @NotNull(message = "End date is required")
     @Future(message = "End date must be after the start date")
     private Date endDate;
+
+    public CampaignDto(Campaign campaign) {
+    }
+
+    public CampaignDto() {
+    }
+
 }

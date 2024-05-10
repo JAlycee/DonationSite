@@ -1,5 +1,6 @@
 package com.Jasmineconnect.DonationSite.Dto;
 
+import com.Jasmineconnect.DonationSite.Entity.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -31,6 +32,14 @@ public class UserDto {
     @Column(unique = true)
     private String email;
 
+    public UserDto(User user) {
+        this.id = user.getId();
+        this.username = user.getUsername();
+        this.email = user.getEmail();
+    }
+
     public UserDto() {
+
     }
 }
+

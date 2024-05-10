@@ -49,9 +49,9 @@ public class CampaignServiceImpl implements CampaignService {
         Optional<Campaign> existingCampaignOptional = campaignRepository.findById(id);
         if (existingCampaignOptional.isPresent()) {
             Campaign existingCampaign = existingCampaignOptional.get();
-            campaignMapper.updateEntityFromDto(campaignDto, existingCampaign);
+            campaignMapper.updateEntityFromDto(campaignDto, existingCampaign); // Update entity from DTO
             Campaign updatedCampaign = campaignRepository.save(existingCampaign);
-            return Optional.of(campaignMapper.entityToDto(updatedCampaign));
+            return Optional.of(campaignMapper.entityToDto(updatedCampaign)); // Convert updated entity to DTO
         } else {
             return Optional.empty();
         }
@@ -60,9 +60,7 @@ public class CampaignServiceImpl implements CampaignService {
     @Override
     public List<CampaignDto> findAllCampaigns() {
         List<Campaign> campaigns = campaignRepository.findAll();
-        return campaigns.stream()
-                .map(campaignMapper::convertToDTO)
-                .collect(Collectors.toList());
+        return campaignMapper.entitiesToDtos(campaigns);
     }
 
     @Override
@@ -96,7 +94,7 @@ public class CampaignServiceImpl implements CampaignService {
 //    private final CampaignMapper campaignMapper;
 //
 //    @Autowired
-//    public CampaignServiceImpl(CampaignRepository campaignRepository, CampaignMapper campaignMapper) {
+//    public CampaignvServiceImpl(CampaignRepository campaignRepository, CampaignMapper campaignMapper) {
 //        this.campaignRepository = campaignRepository;
 //        this.campaignMapper = campaignMapper;
 //    }

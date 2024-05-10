@@ -6,8 +6,10 @@ import com.Jasmineconnect.DonationSite.Dto.UserDto;
 import com.Jasmineconnect.DonationSite.Entity.Campaign;
 import com.Jasmineconnect.DonationSite.Entity.Donation;
 import com.Jasmineconnect.DonationSite.Entity.User;
-import org.springframework.stereotype.Component;
 
+import lombok.Data;
+import org.springframework.stereotype.Component;
+@Data
 @Component
 public class DonationMapper {
 
@@ -15,14 +17,8 @@ public class DonationMapper {
         DonationDto dto = new DonationDto();
         dto.setId(donation.getId());
         dto.setAmount(donation.getAmount());
+        dto.setCampaignId(donation.getCampaign().getId());
         dto.setMessage(donation.getMessage());
-        // Set campaign and user DTOs
-        if (donation.getCampaign() != null) {
-            dto.setCampaignDto(convertCampaignToDto(donation.getCampaign()));
-        }
-        if (donation.getUser() != null) {
-            dto.setUserDto(convertUserToDto(donation.getUser()));
-        }
         return dto;
     }
 
@@ -93,5 +89,4 @@ public class DonationMapper {
             existingDonation.setUser(convertUserDtoToEntity(updatedDonationDto.getUserDto()));
         }
     }
-
 }

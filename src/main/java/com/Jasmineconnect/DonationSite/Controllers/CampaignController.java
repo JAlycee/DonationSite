@@ -2,6 +2,7 @@ package com.Jasmineconnect.DonationSite.Controllers;
 
 import com.Jasmineconnect.DonationSite.Dto.CampaignDto;
 import com.Jasmineconnect.DonationSite.Service.CampaignService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,14 +12,15 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/campaigns")
+@CrossOrigin(origins = "http://localhost:3000")
 public class CampaignController {
 
     private final CampaignService campaignService;
 
+    @Autowired
     public CampaignController(CampaignService campaignService) {
         this.campaignService = campaignService;
     }
-
 
     @PostMapping
     public ResponseEntity<CampaignDto> createCampaign(@RequestBody CampaignDto campaignDto) {

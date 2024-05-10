@@ -60,6 +60,6 @@ public class UserService {
     }
 
     private UserDto mapToDto(User user) {
-        return new UserDto();
+        return new UserDto(user);
     }
 }

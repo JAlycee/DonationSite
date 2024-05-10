@@ -20,6 +20,7 @@ public class DonationServiceImpl implements DonationService {
     private final DonationRepository donationRepository;
     private final DonationMapper donationMapper;
 
+
     @Autowired
     public DonationServiceImpl(DonationRepository donationRepository, DonationMapper donationMapper) {
         this.donationRepository = donationRepository;

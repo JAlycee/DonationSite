@@ -6,7 +6,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class UserMapper {
-    private UserDto convertToDTO(User user) {
+
+    public UserDto convertToDTO(User user) {
         UserDto dto = new UserDto();
         dto.setId(user.getId());
         dto.setUsername(user.getUsername());
@@ -14,7 +15,7 @@ public class UserMapper {
         return dto;
     }
 
-    private User convertToEntity(UserDto dto) {
+    public User convertToEntity(UserDto dto) {
         User user = new User();
         user.setId(dto.getId());
         user.setUsername(dto.getUsername());
