@@ -2,15 +2,12 @@ package com.Jasmineconnect.DonationSite.Controllers;
 
 import com.Jasmineconnect.DonationSite.Dto.DonationDto;
 import com.Jasmineconnect.DonationSite.Service.DonationService;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+import java.util.Optional;
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/donations")
@@ -24,23 +21,27 @@ public class DonationController {
     }
 
     @PostMapping
-    public ResponseEntity<DonationDto> createDonation(@Valid @RequestBody DonationDto donationDto) {
+    public ResponseEntity<DonationDto> createDonation(@RequestBody DonationDto donationDto) {
         DonationDto createdDonation = donationService.createDonation(donationDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdDonation);
+        return ResponseEntity.ok(createdDonation);
     }
 
     @GetMapping("/{donationId}")
     public ResponseEntity<DonationDto> getDonationById(@PathVariable Long donationId) {
-        return donationService.getDonationById(donationId)
-                .map(donation -> ResponseEntity.ok(donation))
+        Optional<DonationDto> donationDtoOptional = donationService.getDonationById(donationId);
+        return donationDtoOptional
+                .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PutMapping("/{donationId}")
-    public ResponseEntity<DonationDto> updateDonation(@PathVariable Long donationId, @Valid @RequestBody DonationDto donationDto) {
-        return donationService.updateDonation(donationId, donationDto)
-                .map(donation -> ResponseEntity.ok(donation))
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<Optional<DonationDto>> updateDonation(@PathVariable Long donationId, @RequestBody DonationDto updatedDonationDto) {
+        Optional<DonationDto> updatedDonation = donationService.updateDonation(donationId, updatedDonationDto);
+        if (updatedDonation.isPresent()) {
+            return ResponseEntity.ok(updatedDonation);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @DeleteMapping("/{donationId}")

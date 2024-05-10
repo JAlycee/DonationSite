@@ -2,18 +2,30 @@ package com.Jasmineconnect.DonationSite.Service;
 
 import com.Jasmineconnect.DonationSite.Dto.DonationDto;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 public interface DonationService {
         DonationDto createDonation(DonationDto donationDto);
+
         Optional<DonationDto> getDonationById(Long donationId);
-        DonationDto updateDonation(Long donationId, DonationDto updatedDonationDto);
+
+        Optional<DonationDto> updateDonation(Long donationId, DonationDto updatedDonationDto);
+
         List<DonationDto> getAllDonations();
-        void deleteDonation(Long donationId);
-    }
+
+        boolean deleteDonation(Long donationId);
+
+        List<DonationDto> getDonationsByCampaignId(Long campaignId);
+
+        List<DonationDto> getDonationsByUserId(Long userId);
+}
+
+
 //    private final DonationRepository donationRepository;
 //    private final CampaignRepository campaignRepository;
 //    private final DonationMapper donationMapper;

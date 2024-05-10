@@ -2,77 +2,54 @@ package com.Jasmineconnect.DonationSite.Controllers;
 
 import com.Jasmineconnect.DonationSite.Dto.CampaignDto;
 import com.Jasmineconnect.DonationSite.Service.CampaignService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
-@Validated
 @RequestMapping("/campaigns")
-@CrossOrigin(origins = "http://localhost:3000")
 public class CampaignController {
 
     private final CampaignService campaignService;
 
-    @Autowired
     public CampaignController(CampaignService campaignService) {
         this.campaignService = campaignService;
     }
 
+
     @PostMapping
     public ResponseEntity<CampaignDto> createCampaign(@RequestBody CampaignDto campaignDto) {
-        CampaignDto newCampaign = campaignService.createCampaign(campaignDto);
-        return new ResponseEntity<>(newCampaign, HttpStatus.CREATED);
+        CampaignDto createdCampaign = campaignService.createCampaign(campaignDto);
+        return ResponseEntity.ok(createdCampaign);
     }
-//    @PostMapping
-//    public ResponseEntity<CampaignDto> createCampaign(@RequestBody @Valid CampaignDto campaignDto) {
-//        try {
-//            CampaignDto createdCampaign = campaignService.createCampaign(campaignDto);
-//            return ResponseEntity.status(HttpStatus.CREATED).body(createdCampaign);
-//        } catch (Exception e) {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-//        }
-//    }
 
-// Works
-@GetMapping("/{id}")
-public ResponseEntity<CampaignDto> getCampaignById(@PathVariable Long id) {
-    return campaignService.getCampaignById(id)
-            .map(ResponseEntity::ok)
-            .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
-}
-
-    @PutMapping("/{id}")
-    public ResponseEntity<CampaignDto> updateCampaign(@PathVariable Long id, @RequestBody CampaignDto campaignDto) {
-        return campaignService.updateCampaign(id, campaignDto)
+    @GetMapping("/{campaignId}")
+    public ResponseEntity<CampaignDto> getCampaignById(@PathVariable Long campaignId) {
+        Optional<CampaignDto> campaignDtoOptional = campaignService.getCampaignById(campaignId);
+        return campaignDtoOptional
                 .map(ResponseEntity::ok)
-                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+                .orElse(ResponseEntity.notFound().build());
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCampaign(@PathVariable Long id) {
-        boolean isDeleted = campaignService.deleteCampaign(id);
-        if (isDeleted) {
+    @PutMapping("/{campaignId}")
+    public ResponseEntity<CampaignDto> updateCampaign(@PathVariable Long campaignId, @RequestBody CampaignDto updatedCampaignDto) throws ChangeSetPersister.NotFoundException {
+        Optional<CampaignDto> updatedCampaignOptional = campaignService.updateCampaign(campaignId, updatedCampaignDto);
+        return updatedCampaignOptional
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/{campaignId}")
+    public ResponseEntity<Void> deleteCampaign(@PathVariable Long campaignId) {
+        boolean deleted = campaignService.deleteCampaign(campaignId);
+        if (deleted) {
             return ResponseEntity.noContent().build();
         } else {
             return ResponseEntity.notFound().build();
         }
-    }
-
-    @GetMapping("/search")
-    public ResponseEntity<List<CampaignDto>> findByGoalAmount(@RequestParam Double goalAmount) {
-        List<CampaignDto> campaigns = campaignService.findByGoalAmount(goalAmount);
-        return ResponseEntity.ok(campaigns);
-    }
-
-    @GetMapping("/search-name")
-    public ResponseEntity<List<CampaignDto>> findByName(@RequestParam String name) {
-        List<CampaignDto> campaigns = campaignService.findByName(name);
-        return ResponseEntity.ok(campaigns);
     }
 
     @GetMapping

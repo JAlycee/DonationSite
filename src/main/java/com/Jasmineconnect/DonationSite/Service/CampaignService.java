@@ -1,15 +1,18 @@
 package com.Jasmineconnect.DonationSite.Service;
 
 import com.Jasmineconnect.DonationSite.Dto.CampaignDto;
+import org.springframework.data.crossstore.ChangeSetPersister;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
+@Transactional
 public interface CampaignService {
     CampaignDto createCampaign(CampaignDto campaignDto);
     Optional<CampaignDto> getCampaignById(Long id);
     Optional<CampaignDto> updateCampaignNameAndDescription(Long id, String name, String description);
-    Optional<CampaignDto> updateCampaign(Long id, CampaignDto campaignDto);
+    Optional<CampaignDto> updateCampaign(Long id, CampaignDto campaignDto) throws ChangeSetPersister.NotFoundException;
     List<CampaignDto> findAllCampaigns();
     boolean deleteCampaign(Long id);
     List<CampaignDto> findByGoalAmount(Double goalAmount);

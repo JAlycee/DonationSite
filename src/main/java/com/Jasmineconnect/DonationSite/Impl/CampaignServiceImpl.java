@@ -5,6 +5,7 @@ import com.Jasmineconnect.DonationSite.Entity.Campaign;
 import com.Jasmineconnect.DonationSite.Mappers.CampaignMapper;
 import com.Jasmineconnect.DonationSite.Repository.CampaignRepository;
 import com.Jasmineconnect.DonationSite.Service.CampaignService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,7 @@ public class CampaignServiceImpl implements CampaignService {
     private final CampaignRepository campaignRepository;
     private final CampaignMapper campaignMapper;
 
+    @Autowired
     public CampaignServiceImpl(CampaignRepository campaignRepository, CampaignMapper campaignMapper) {
         this.campaignRepository = campaignRepository;
         this.campaignMapper = campaignMapper;
@@ -26,74 +28,129 @@ public class CampaignServiceImpl implements CampaignService {
 
     @Override
     public CampaignDto createCampaign(CampaignDto campaignDto) {
-        Campaign newCampaign = campaignMapper.convertToEntity(campaignDto);
-        newCampaign = campaignRepository.save(newCampaign);
-        return campaignMapper.convertToDTO(newCampaign);
+        Campaign campaign = campaignMapper.dtoToEntity(campaignDto);
+        Campaign savedCampaign = campaignRepository.save(campaign);
+        return campaignMapper.entityToDto(savedCampaign);
     }
 
     @Override
     public Optional<CampaignDto> getCampaignById(Long id) {
-        return campaignRepository.findById(id)
-                .map(this::convertToDTO);
+        Optional<Campaign> campaignOptional = campaignRepository.findById(id);
+        return campaignOptional.map(campaignMapper::entityToDto);
     }
 
     @Override
     public Optional<CampaignDto> updateCampaignNameAndDescription(Long id, String name, String description) {
-        return campaignRepository.findById(id).map(existingCampaign -> {
-            existingCampaign.setName(name);
-            existingCampaign.setDescription(description);
-            existingCampaign = campaignRepository.save(existingCampaign);
-            return convertToDTO(existingCampaign);
-        });
+        return Optional.empty();
     }
 
     @Override
     public Optional<CampaignDto> updateCampaign(Long id, CampaignDto campaignDto) {
-        return campaignRepository.findById(id).map(existingCampaign -> {
-            existingCampaign.setName(campaignDto.getName());
-            existingCampaign.setDescription(campaignDto.getDescription());
-            existingCampaign.setGoalAmount(campaignDto.getGoalAmount());
-            existingCampaign.setStartDate(campaignDto.getStartDate());
-            existingCampaign.setEndDate(campaignDto.getEndDate());
-            existingCampaign = campaignRepository.save(existingCampaign);
-            return convertToDTO(existingCampaign);
-        });
+        Optional<Campaign> existingCampaignOptional = campaignRepository.findById(id);
+        if (existingCampaignOptional.isPresent()) {
+            Campaign existingCampaign = existingCampaignOptional.get();
+            campaignMapper.updateEntityFromDto(campaignDto, existingCampaign);
+            Campaign updatedCampaign = campaignRepository.save(existingCampaign);
+            return Optional.of(campaignMapper.entityToDto(updatedCampaign));
+        } else {
+            return Optional.empty();
+        }
     }
 
     @Override
     public List<CampaignDto> findAllCampaigns() {
-        return campaignRepository.findAll()
-                .stream()
-                .map(this::convertToDTO)
+        List<Campaign> campaigns = campaignRepository.findAll();
+        return campaigns.stream()
+                .map(campaignMapper::convertToDTO)
                 .collect(Collectors.toList());
     }
 
     @Override
     public boolean deleteCampaign(Long id) {
-        return campaignRepository.findById(id).map(campaign -> {
-            campaignRepository.delete(campaign);
+        if (campaignRepository.existsById(id)) {
+            campaignRepository.deleteById(id);
             return true;
-        }).orElse(false);
+        }
+        return false;
     }
 
-    @Override
-    public List<CampaignDto> findByGoalAmount(Double goalAmount) {
-        return campaignRepository.findByGoalAmount(goalAmount)
-                .stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
+        @Override
+        public List<CampaignDto> findByGoalAmount(Double goalAmount) {
+            List<Campaign> campaigns = campaignRepository.findByGoalAmount(goalAmount);
+            return campaigns.stream().map(campaignMapper::entityToDto).collect(Collectors.toList());
+        }
+
+        @Override
+        public List<CampaignDto> findByName(String name) {
+            List<Campaign> campaigns = campaignRepository.findByName(name);
+            return campaigns.stream().map(campaignMapper::entityToDto).collect(Collectors.toList());
+        }
+
+        // Additional search and filter methods can be added here
     }
 
-    @Override
-    public List<CampaignDto> findByName(String name) {
-        return campaignRepository.findByName(name)
-                .stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
-    }
-
-    public CampaignDto convertToDTO(Campaign campaign) {
-        return campaignMapper.convertToDTO(campaign);
-    }
-}
-
+//@Service
+//public class CampaignServiceImpl implements CampaignService {
+//
+//    private final CampaignRepository campaignRepository;
+//    private final CampaignMapper campaignMapper;
+//
+//    @Autowired
+//    public CampaignServiceImpl(CampaignRepository campaignRepository, CampaignMapper campaignMapper) {
+//        this.campaignRepository = campaignRepository;
+//        this.campaignMapper = campaignMapper;
+//    }
+//
+//    @Override
+//    public CampaignDto createCampaign(CampaignDto campaignDto) {
+//        Campaign campaign = campaignMapper.dtoToEntity(campaignDto);
+//        Campaign savedCampaign = campaignRepository.save(campaign);
+//        return campaignMapper.entityToDto(savedCampaign);
+//    }
+//
+//    @Override
+//    public Optional<CampaignDto> getCampaignById(Long campaignId) {
+//        Optional<Campaign> campaignOptional = campaignRepository.findById(campaignId);
+//        return campaignOptional.map(campaignMapper::entityToDto);
+//    }
+//
+//    @Override
+//    public Optional<CampaignDto> updateCampaignNameAndDescription(Long id, String name, String description) {
+//        return Optional.empty();
+//    }
+//
+//    @Override
+//    public Optional<CampaignDto> updateCampaign(Long campaignId, CampaignDto updatedCampaignDto) throws ChangeSetPersister.NotFoundException {
+//        Campaign existingCampaign = campaignRepository.findById(campaignId)
+//                .orElseThrow(() -> new ChangeSetPersister.NotFoundException());
+//
+//        campaignMapper.updateEntityFromDto(updatedCampaignDto, existingCampaign);
+//
+//        Campaign updatedCampaign = campaignRepository.save(existingCampaign);
+//        return Optional.of(campaignMapper.entityToDto(updatedCampaign));
+//    }
+//
+//    @Override
+//    public boolean deleteCampaign(Long campaignId) {
+//        if (campaignRepository.existsById(campaignId)) {
+//            campaignRepository.deleteById(campaignId);
+//            return true;
+//        }
+//        return false;
+//    }
+//
+//    @Override
+//    public List<CampaignDto> findByGoalAmount(Double goalAmount) {
+//        return null;
+//    }
+//
+//    @Override
+//    public List<CampaignDto> findByName(String name) {
+//        return null;
+//    }
+//
+//    @Override
+//    public List<CampaignDto> findAllCampaigns() {
+//        List<Campaign> campaigns = campaignRepository.findAll();
+//        return campaignMapper.entitiesToDtos(campaigns);
+//    }
