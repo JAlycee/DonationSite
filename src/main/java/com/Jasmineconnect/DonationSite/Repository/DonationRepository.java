@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 @Repository
 public interface DonationRepository extends JpaRepository<Donation, Long> {
-    List<Donation> findAllByUserId(Long userId);
-    List<Donation> findAllByCampaignId(Long campaignId);
+
+    List<Donation> findByCampaignId(Long campaignId);
 }
 

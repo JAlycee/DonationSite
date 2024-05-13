@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
 @RestController
 @RequestMapping("/campaigns")
 public class CampaignController {
@@ -16,40 +15,46 @@ public class CampaignController {
     @Autowired
     private CampaignService campaignService;
 
-    @PostMapping
+    @PostMapping("/campaigns")
     public ResponseEntity<CampaignDto> createCampaign(@RequestBody CampaignDto campaignDto) {
-        CampaignDto createdCampaign = campaignService.createCampaign(campaignDto);
-        return new ResponseEntity<>(createdCampaign, HttpStatus.CREATED);
+        // Logic to create the campaign and save it to the database
+        // Return the created campaign DTO along with a success status code
+        CampaignDto createdCampaignDto = campaignService.createCampaign(campaignDto);
+        return new ResponseEntity<>(createdCampaignDto, HttpStatus.CREATED);
     }
 
+    // Update an existing campaign
     @PutMapping("/{id}")
-    public ResponseEntity<CampaignDto> updateCampaign(@PathVariable Long id, @RequestBody CampaignDto updatedCampaign) {
-        CampaignDto updated = campaignService.updateCampaign(id, updatedCampaign);
-        return ResponseEntity.ok(updated);
+    public ResponseEntity<CampaignDto> updateCampaign(@PathVariable Long id, @RequestBody CampaignDto campaignDto) {
+        CampaignDto updatedCampaign = campaignService.updateCampaign(id, campaignDto);
+        return ResponseEntity.ok(updatedCampaign);
     }
 
+    // Delete a campaign
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCampaign(@PathVariable Long id) {
         campaignService.deleteCampaign(id);
         return ResponseEntity.noContent().build();
     }
 
+    // Get a specific campaign by ID
     @GetMapping("/{id}")
     public ResponseEntity<CampaignDto> getCampaignById(@PathVariable Long id) {
         CampaignDto campaign = campaignService.getCampaignById(id);
         return ResponseEntity.ok(campaign);
     }
 
+    // List all campaigns
+    @GetMapping
+    public ResponseEntity<List<CampaignDto>> getAllCampaigns() {
+        List<CampaignDto> campaigns = campaignService.getAllCampaigns();
+        return ResponseEntity.ok(campaigns);
+    }
+
+    // Search campaigns by name
     @GetMapping("/search")
     public ResponseEntity<List<CampaignDto>> searchCampaignsByName(@RequestParam String name) {
         List<CampaignDto> campaigns = campaignService.searchCampaignsByName(name);
         return ResponseEntity.ok(campaigns);
     }
-
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<CampaignDto>> getAllCampaignsByUser(@PathVariable Long userId) {
-        List<CampaignDto> campaigns = campaignService.getAllCampaignsByUser(userId);
-        return ResponseEntity.ok(campaigns);
-    }
 }
-

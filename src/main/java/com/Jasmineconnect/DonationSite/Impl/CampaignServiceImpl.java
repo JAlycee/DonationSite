@@ -2,14 +2,12 @@ package com.Jasmineconnect.DonationSite.Impl;
 
 import com.Jasmineconnect.DonationSite.Dto.CampaignDto;
 import com.Jasmineconnect.DonationSite.Entity.Campaign;
-import com.Jasmineconnect.DonationSite.Entity.User;
 import com.Jasmineconnect.DonationSite.Mappers.CampaignMapper;
 import com.Jasmineconnect.DonationSite.Repository.CampaignRepository;
-import com.Jasmineconnect.DonationSite.Repository.UserRepository;
 import com.Jasmineconnect.DonationSite.Service.CampaignService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,54 +16,67 @@ public class CampaignServiceImpl implements CampaignService {
 
     @Autowired
     private CampaignRepository campaignRepository;
-    @Autowired
-    private UserRepository userRepository;
 
-    @Override
-    @Transactional
     public CampaignDto createCampaign(CampaignDto campaignDto) {
-        Campaign campaign = CampaignMapper.campaignDtoToCampaign(campaignDto);
-        // Retrieve the user with the ID provided in DTO
-        User user = userRepository.findById(campaignDto.getUserId())
-                .orElseThrow(() -> new RuntimeException("User not found"));
-        campaign.setUser(user);
-        // Save the campaign and return the DTO with data from the saved entity
-        return CampaignMapper.toDto(campaignRepository.save(campaign));
+        // Logic to map the DTO to an entity, save it to the database, and return the DTO
+        Campaign campaign = CampaignMapper.toEntity(campaignDto);
+        Campaign savedCampaign = campaignRepository.save(campaign);
+        return CampaignMapper.toDto(savedCampaign);
     }
 
     @Override
-    @Transactional
-    public CampaignDto updateCampaign(Long id, CampaignDto updatedCampaign) {
-        Campaign campaign = campaignRepository.findById(id).orElseThrow(() -> new RuntimeException("Campaign not found"));
-        campaign.setName(updatedCampaign.getName());
-        campaign.setDescription(updatedCampaign.getDescription());
-        campaign.setGoalAmount(updatedCampaign.getGoalAmount());
-        campaign.setAmountRaised(updatedCampaign.getAmountRaised());
-        return CampaignMapper.toDto(campaignRepository.save(campaign));
+    public CampaignDto updateCampaign(Long id, CampaignDto campaignDto) {
+        Campaign existingCampaign = campaignRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Campaign not found with id: " + id));
+        existingCampaign.setName(campaignDto.getName());
+        existingCampaign.setDescription(campaignDto.getDescription());
+        // Update other fields as needed
+        Campaign updatedCampaign = campaignRepository.save(existingCampaign);
+        return mapEntityToDto(updatedCampaign);
     }
 
     @Override
-    @Transactional
     public void deleteCampaign(Long id) {
         campaignRepository.deleteById(id);
     }
 
     @Override
-    @Transactional(readOnly = true)
     public CampaignDto getCampaignById(Long id) {
-        Campaign campaign = campaignRepository.findById(id).orElseThrow(() -> new RuntimeException("Campaign not found"));
-        return CampaignMapper.toDto(campaign);
+        Campaign campaign = campaignRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Campaign not found with id: " + id));
+        return mapEntityToDto(campaign);
     }
 
     @Override
-    @Transactional(readOnly = true)
+    public List<CampaignDto> getAllCampaigns() {
+        List<Campaign> campaigns = campaignRepository.findAll();
+        return campaigns.stream()
+                .map(this::mapEntityToDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public List<CampaignDto> searchCampaignsByName(String name) {
-        return campaignRepository.findByNameContaining(name).stream().map(CampaignMapper::toDto).collect(Collectors.toList());
+        List<Campaign> campaigns = campaignRepository.findByNameContainingIgnoreCase(name);
+        return campaigns.stream()
+                .map(this::mapEntityToDto)
+                .collect(Collectors.toList());
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public List<CampaignDto> getAllCampaignsByUser(Long userId) {
-        return campaignRepository.findAllByUserId(userId).stream().map(CampaignMapper::toDto).collect(Collectors.toList());
+    private CampaignDto mapEntityToDto(Campaign campaign) {
+        CampaignDto campaignDto = new CampaignDto();
+        campaignDto.setId(campaign.getId());
+        campaignDto.setName(campaign.getName());
+        campaignDto.setDescription(campaign.getDescription());
+        // Map other fields as needed
+        return campaignDto;
+    }
+
+    private Campaign mapDtoToEntity(CampaignDto campaignDto) {
+        Campaign campaign = new Campaign();
+        campaign.setName(campaignDto.getName());
+        campaign.setDescription(campaignDto.getDescription());
+        // Map other fields as needed
+        return campaign;
     }
 }
