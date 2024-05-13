@@ -15,7 +15,7 @@ public class CampaignController {
     @Autowired
     private CampaignService campaignService;
 
-    @PostMapping("/campaigns")
+    @PostMapping("/campaign")
     public ResponseEntity<CampaignDto> createCampaign(@RequestBody CampaignDto campaignDto) {
         // Logic to create the campaign and save it to the database
         // Return the created campaign DTO along with a success status code
@@ -46,9 +46,8 @@ public class CampaignController {
 
     // List all campaigns
     @GetMapping
-    public ResponseEntity<List<CampaignDto>> getAllCampaigns() {
-        List<CampaignDto> campaigns = campaignService.getAllCampaigns();
-        return ResponseEntity.ok(campaigns);
+    public List<CampaignDto> getAllCampaigns() {
+        return campaignService.getAllCampaigns();
     }
 
     // Search campaigns by name

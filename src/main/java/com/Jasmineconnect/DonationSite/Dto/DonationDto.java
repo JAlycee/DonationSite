@@ -6,17 +6,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class DonationDto {
-    @Setter
-    @Getter
+    private Long id;
     private Double amount;
     private String message;
-    private Long selectedCampaignId; // Include the selected campaign ID field
-
-    public void setId() {
-    }
-
-    public Long getId() {
-        return null;
-    }
+    private Long selectedCampaignId;
 }
-

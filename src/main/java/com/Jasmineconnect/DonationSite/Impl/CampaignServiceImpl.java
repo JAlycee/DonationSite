@@ -49,9 +49,8 @@ public class CampaignServiceImpl implements CampaignService {
 
     @Override
     public List<CampaignDto> getAllCampaigns() {
-        List<Campaign> campaigns = campaignRepository.findAll();
-        return campaigns.stream()
-                .map(this::mapEntityToDto)
+        return campaignRepository.findAll().stream()
+                .map(CampaignMapper::toDto) // Assuming you have a CampaignMapper
                 .collect(Collectors.toList());
     }
 
