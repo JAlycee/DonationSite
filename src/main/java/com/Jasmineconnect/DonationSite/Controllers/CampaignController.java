@@ -1,62 +1,53 @@
 package com.Jasmineconnect.DonationSite.Controllers;
-
 import com.Jasmineconnect.DonationSite.Dto.CampaignDto;
 import com.Jasmineconnect.DonationSite.Service.CampaignService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.ChangeSetPersister;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/campaigns")
-@CrossOrigin(origins = "http://localhost:3000")
 public class CampaignController {
 
-    private final CampaignService campaignService;
-
     @Autowired
-    public CampaignController(CampaignService campaignService) {
-        this.campaignService = campaignService;
-    }
+    private CampaignService campaignService;
 
     @PostMapping
     public ResponseEntity<CampaignDto> createCampaign(@RequestBody CampaignDto campaignDto) {
         CampaignDto createdCampaign = campaignService.createCampaign(campaignDto);
-        return ResponseEntity.ok(createdCampaign);
+        return new ResponseEntity<>(createdCampaign, HttpStatus.CREATED);
     }
 
-    @GetMapping("/{campaignId}")
-    public ResponseEntity<CampaignDto> getCampaignById(@PathVariable Long campaignId) {
-        Optional<CampaignDto> campaignDtoOptional = campaignService.getCampaignById(campaignId);
-        return campaignDtoOptional
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    @PutMapping("/{id}")
+    public ResponseEntity<CampaignDto> updateCampaign(@PathVariable Long id, @RequestBody CampaignDto updatedCampaign) {
+        CampaignDto updated = campaignService.updateCampaign(id, updatedCampaign);
+        return ResponseEntity.ok(updated);
     }
 
-    @PutMapping("/{campaignId}")
-    public ResponseEntity<CampaignDto> updateCampaign(@PathVariable Long campaignId, @RequestBody CampaignDto updatedCampaignDto) throws ChangeSetPersister.NotFoundException {
-        Optional<CampaignDto> updatedCampaignOptional = campaignService.updateCampaign(campaignId, updatedCampaignDto);
-        return updatedCampaignOptional
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteCampaign(@PathVariable Long id) {
+        campaignService.deleteCampaign(id);
+        return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/{campaignId}")
-    public ResponseEntity<Void> deleteCampaign(@PathVariable Long campaignId) {
-        boolean deleted = campaignService.deleteCampaign(campaignId);
-        if (deleted) {
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    @GetMapping("/{id}")
+    public ResponseEntity<CampaignDto> getCampaign(@PathVariable Long id) {
+        CampaignDto campaign = campaignService.getCampaignById(id);
+        return ResponseEntity.ok(campaign);
     }
 
-    @GetMapping
-    public ResponseEntity<List<CampaignDto>> getAllCampaigns() {
-        List<CampaignDto> campaigns = campaignService.findAllCampaigns();
+    @GetMapping("/search")
+    public ResponseEntity<List<CampaignDto>> searchCampaigns(@RequestParam String name) {
+        List<CampaignDto> campaigns = campaignService.searchCampaignsByName(name);
+        return ResponseEntity.ok(campaigns);
+    }
+
+    @GetMapping("/user/{user_Id}")
+    public ResponseEntity<List<CampaignDto>> getAllCampaignsByUser(@PathVariable Long user_Id) {
+        List<CampaignDto> campaigns = campaignService.getAllCampaignsByUser(user_Id);
         return ResponseEntity.ok(campaigns);
     }
 }

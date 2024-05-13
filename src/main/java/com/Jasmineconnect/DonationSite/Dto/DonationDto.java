@@ -1,6 +1,5 @@
 package com.Jasmineconnect.DonationSite.Dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,16 +8,8 @@ import lombok.Setter;
 public class DonationDto {
     private Long id;
     private Double amount;
-    private Long campaignId;
     private String message;
+    private Long campaignId;
+    private Long userId;
 
-    @JsonIgnore
-    private CampaignDto campaignDto; // Exclude campaignDto from serialization
-
-    @JsonIgnore
-    private UserDto userDto; // Exclude userDto from serialization
-
-    public DonationDto() {
-    }
 }
-

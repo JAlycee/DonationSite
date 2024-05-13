@@ -31,5 +31,4 @@ public class User extends AbstractEntity {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Donation> donations;
-
 }

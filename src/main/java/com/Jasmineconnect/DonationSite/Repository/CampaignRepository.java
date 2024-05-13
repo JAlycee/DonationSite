@@ -6,11 +6,10 @@ import org.springframework.stereotype.Repository;
 
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface CampaignRepository extends JpaRepository<Campaign, Long> {
-
-    List<Campaign> findByGoalAmount(Double goalAmount);
-
-    List<Campaign> findByName(String name);
+    List<Campaign> findByNameContaining(String name);
+    List<Campaign> findAllByUserId(Long userId);
 }

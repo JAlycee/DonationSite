@@ -2,12 +2,8 @@ package com.Jasmineconnect.DonationSite.Mappers;
 
 import com.Jasmineconnect.DonationSite.Dto.UserDto;
 import com.Jasmineconnect.DonationSite.Entity.User;
-import org.springframework.stereotype.Component;
-
-@Component
 public class UserMapper {
-
-    public UserDto convertToDTO(User user) {
+    public static UserDto toDto(User user) {
         UserDto dto = new UserDto();
         dto.setId(user.getId());
         dto.setUsername(user.getUsername());
@@ -15,7 +11,7 @@ public class UserMapper {
         return dto;
     }
 
-    public User convertToEntity(UserDto dto) {
+    public static User userDtoToUser(UserDto dto) {
         User user = new User();
         user.setId(dto.getId());
         user.setUsername(dto.getUsername());

@@ -12,8 +12,4 @@ public class DonationSiteApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(DonationSiteApplication.class, args);
 	}
-	@Bean
-	public CampaignController campaignController(CampaignService campaignService) {
-		return new CampaignController(campaignService);
-	}
 }
