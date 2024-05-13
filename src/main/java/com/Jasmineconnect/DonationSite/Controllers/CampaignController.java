@@ -1,4 +1,5 @@
 package com.Jasmineconnect.DonationSite.Controllers;
+
 import com.Jasmineconnect.DonationSite.Dto.CampaignDto;
 import com.Jasmineconnect.DonationSite.Service.CampaignService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,20 +35,21 @@ public class CampaignController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CampaignDto> getCampaign(@PathVariable Long id) {
+    public ResponseEntity<CampaignDto> getCampaignById(@PathVariable Long id) {
         CampaignDto campaign = campaignService.getCampaignById(id);
         return ResponseEntity.ok(campaign);
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<CampaignDto>> searchCampaigns(@RequestParam String name) {
+    public ResponseEntity<List<CampaignDto>> searchCampaignsByName(@RequestParam String name) {
         List<CampaignDto> campaigns = campaignService.searchCampaignsByName(name);
         return ResponseEntity.ok(campaigns);
     }
 
-    @GetMapping("/user/{user_Id}")
-    public ResponseEntity<List<CampaignDto>> getAllCampaignsByUser(@PathVariable Long user_Id) {
-        List<CampaignDto> campaigns = campaignService.getAllCampaignsByUser(user_Id);
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<CampaignDto>> getAllCampaignsByUser(@PathVariable Long userId) {
+        List<CampaignDto> campaigns = campaignService.getAllCampaignsByUser(userId);
         return ResponseEntity.ok(campaigns);
     }
 }
+

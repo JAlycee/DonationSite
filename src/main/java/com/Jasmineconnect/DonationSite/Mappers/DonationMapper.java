@@ -2,10 +2,12 @@ package com.Jasmineconnect.DonationSite.Mappers;
 
 import com.Jasmineconnect.DonationSite.Dto.DonationDto;
 import com.Jasmineconnect.DonationSite.Entity.Donation;
-
 public class DonationMapper {
 
     public static DonationDto toDto(Donation donation) {
+        if (donation == null) {
+            return null;
+        }
         DonationDto dto = new DonationDto();
         dto.setId(donation.getId());
         dto.setAmount(donation.getAmount());
@@ -16,11 +18,16 @@ public class DonationMapper {
     }
 
     public static Donation donationDtoToDonation(DonationDto dto) {
+        if (dto == null) {
+            return null;
+        }
         Donation donation = new Donation();
-        donation.setId(dto.getId()); // Assuming ID is only set for updates, not for new donations
+        donation.setId(dto.getId());  // Assume set for update operations
         donation.setAmount(dto.getAmount());
         donation.setMessage(dto.getMessage());
-        // Note: User and Campaign should be set in the service layer as they require fetching from the database
+        // User and Campaign need to be set in the service layer as they require fetching from the database
         return donation;
     }
 }
+
+
